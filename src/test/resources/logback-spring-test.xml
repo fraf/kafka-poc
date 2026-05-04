@@ -1,0 +1,28 @@
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+    <springProfile name="dev,test,plain-log">
+        <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %ex{2}%nopex%n</pattern>
+            </encoder>
+        </appender>
+		
+		<!--<logger name="org.hibernate.type" level="TRACE" additivity="false">
+			<appender-ref ref="consoleAppender"/>
+		</logger>-->
+
+		<logger name="fr.poc.kafka" level="DEBUG" additivity="false">
+			<appender-ref ref="consoleAppender"/>
+		</logger>
+		<logger level="INFO" name="org.springframework.security.web">
+			<appender-ref ref="consoleAppender"/>
+		</logger>	
+		<root level="INFO">
+			<appender-ref ref="consoleAppender"/>
+		</root>
+    </springProfile>
+
+</configuration>

@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: kafka-poc-test
+  datasource:
+    url: "jdbc:tc:postgresql://localhost:62919/test?loggerLevel=OFF"
+    username: "test"
+    password: "test"
+    driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver" #org.postgresql.Driver
+  # Hibernate is disabled because Flyway will manage schema
+  jpa:
+    hibernate:
+      ddl-auto: "none"
+    show-sql: "true"
+  flyway:
+    enabled: "true"
+    locations: "classpath:db/migration"
+    user: "test"
+    password: "test"
+logging:
+  level:
+    root: "info"
+    fr.poc.kafka: "debug"
+    org.flywaydb: "debug"
+    org.springframework.web: "info"
+    org.hibernate: "error"
+  config: "src/test/resources/logback-spring-test.xml"
+  file:
+    name: "logs/kafka-poc-test.log"
