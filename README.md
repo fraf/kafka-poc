@@ -5,7 +5,7 @@ Mise en place d'une webapp spring avec kafka comme broker
 
 ![Initial commit avec Spring Initializr](spring_initializr.jpg)
 
-## Commit xxx
+## Commit #6833241
 
 1. Architecture Hexagonale/Clean Code/DDD
    - fr.poc.kafka (src/main/java)
