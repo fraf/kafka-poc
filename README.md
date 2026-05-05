@@ -1,7 +1,7 @@
 # kafka-poc
 Mise en place d'une webapp spring avec kafka comme broker
 
-## Commit xxx
+## Commit #12428e6
 
 ![Initial commit avec Spring Initializr](spring_initializr.jpg)
 

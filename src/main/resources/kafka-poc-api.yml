@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: Kafka Poc
+  contact:
+    email: ffournel.pro@gmail.com
+  description: |
+    Cette application offre les fonctionnalités suivantes :
+      - Gestion des personnes
+  license:
+    name: Private
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8080/api/
+tags:
+  - description: "Gestion des personnes
+      Permet de gérer des personnes"
+    name: produit
+paths:
+  /person:
+    get:
+      summary: Retourne la liste des personnes
+      description: Liste les personnes, en les recherchant éventuellement par nom
+      operationId: getPerson
+#      security:
+#        - BearerAuth:
+#            - produits:read
+#        - basicAuth:
+#            - produits:read
+      parameters:
+        - name: id
+          description: Identifiant unique de l'entité personne à récupérer.
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDto'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - produit
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: personne
+  /person/createOrUpdate:
+    post:
+      summary: Crée ou maj une nouvelle personne
+      description: Crée ou maj une personne en postant son contenu
+      operationId: createOrUpdatePerson
+#      security:
+#        - BearerAuth:
+#            - produits:write
+#        - basicAuth:
+#            - produits:write
+      requestBody:
+        description: Contenu de la personne à créer ou maj
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PersonDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDto'
+          description: successful operation
+        "400":
+          content: { }
+          description: Impossible de créer ou maj la personne (duplication)
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+      tags:
+        - personne
+      x-codegen-request-body-name: personneSk
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: personne
+components:
+  responses:
+    Success:
+      description: Successful operation
+      content: {}
+    BadRequest:
+      description: Error in client request
+      content: {}
+    Unauthorized:
+      description: Authentication failed
+      content: {}
+    Forbidden:
+      description: User does not have permission to access the specified resource
+      content: {}
+    NotFound:
+      description: The resource can't be found
+      content: {}
+    ConflictOnDelete:
+      description: The specified resource can't be deleted due to a conflict with the current state.
+      content: {}
+  schemas:
+    PersonDto:
+      description: Représentation complète d'une personne
+      properties:
+        id:
+          description: Identifiant de la personne
+          type: integer
+          format: int64
+        firstname:
+          description: Prénom personne
+          type: string
+          minLength: 3
+        lastname:
+          description: Nom peronne
+          type: string
+          minLength: 3
+        age:
+          description: Age peronne
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 999
+      required:
+        - firstname
+        - lastname
+        - age
+      xml:
+        name: Personne
+      example:
+        id: 123
+        firstname: François
+        lastname: Fournel
+        age: 45

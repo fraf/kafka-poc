@@ -1,7 +1,7 @@
 package fr.poc.kafka.person.infrastructure.primary.rest;
 
 import fr.poc.kafka.AbstractIntegrationTestsBase;
-import fr.poc.kafka.person.infrastructure.primary.dtos.PersonDto;
+import fr.poc.kafka.openapi.model.PersonDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 
 @Slf4j
 @AutoConfigureRestClient
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PersonResourceIT extends AbstractIntegrationTestsBase {
 
 
@@ -25,8 +24,8 @@ class PersonResourceIT extends AbstractIntegrationTestsBase {
     @BeforeEach
     public void setup() {
         restClient = RestTestClient.bindToController(personResource)
-                .baseUrl("/person") // 1
-                .defaultHeader("ContentType", "application/json") // 2
+                .baseUrl("/person")
+                .defaultHeader("ContentType", "application/json")
                 .build();
     }
 
@@ -47,7 +46,10 @@ class PersonResourceIT extends AbstractIntegrationTestsBase {
         String lastname = "FOURNEL";
         int age = 45;
 
-        PersonDto personDtoExpected = new PersonDto(null, firstname, lastname, age);
+        PersonDto personDtoExpected = new PersonDto();
+        personDtoExpected.setAge(age);
+        personDtoExpected.setFirstname(firstname);
+        personDtoExpected.setLastname(lastname);
         restClient
                 .post()
                 .uri("/createOrUpdate")
@@ -57,7 +59,7 @@ class PersonResourceIT extends AbstractIntegrationTestsBase {
                 .expectStatus()
                 .isCreated()
                 .expectBody()
-                .jsonPath("$.personId").value(_ -> new GreaterThan<>(1))
+                .jsonPath("$.id").value(_ -> new GreaterThan<>(1))
                 .jsonPath("$.firstname").isEqualTo(firstname)
                 .jsonPath("$.lastname").isEqualTo(lastname)
                 .jsonPath("$.age").isEqualTo(age);

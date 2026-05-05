@@ -1,8 +1,8 @@
 package fr.poc.kafka.person.application;
 
+import fr.poc.kafka.openapi.model.PersonDto;
 import fr.poc.kafka.person.domain.ports.primary.IPersonUseCase;
 import fr.poc.kafka.person.infrastructure.mappers.PersonMapper;
-import fr.poc.kafka.person.infrastructure.primary.dtos.PersonDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

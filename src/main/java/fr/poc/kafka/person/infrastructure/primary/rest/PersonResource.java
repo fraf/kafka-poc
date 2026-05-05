@@ -1,15 +1,14 @@
 package fr.poc.kafka.person.infrastructure.primary.rest;
 
+import fr.poc.kafka.openapi.model.PersonDto;
+import fr.poc.kafka.openapi.rest.PersonApi;
 import fr.poc.kafka.person.application.PersonApplicationService;
-import fr.poc.kafka.person.infrastructure.primary.dtos.PersonDto;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/person")
 @RestController
-public class PersonResource {
+public class PersonResource implements PersonApi {
 
     private final PersonApplicationService personApplicationService;
 
@@ -18,16 +17,12 @@ public class PersonResource {
         this.personApplicationService = personApplicationService;
     }
 
-    @GetMapping("/{personId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PersonDto> getPerson(@PathVariable("personId") Long personId) {
-        PersonDto personDto = personApplicationService.getPersonDto(personId);
+    public ResponseEntity<PersonDto> getPerson(Long id) {
+        PersonDto personDto = personApplicationService.getPersonDto(id);
         return new ResponseEntity<>(personDto, personDto == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @PostMapping("/createOrUpdate")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PersonDto> createOrUpdatePerson(@Valid @RequestBody PersonDto personDto) {
-        return new ResponseEntity<>(personApplicationService.createOrUpdatePersonDto(personDto), HttpStatus.CREATED);
+    public ResponseEntity<PersonDto> createOrUpdatePerson(PersonDto personneSk) {
+        return new ResponseEntity<>(personApplicationService.createOrUpdatePersonDto(personneSk), HttpStatus.CREATED);
     }
 }

@@ -33,6 +33,9 @@
         <postgresql.version>42.7.11</postgresql.version>
         <guava.version>33.6.0-jre</guava.version>
         <mapstruct.version>1.7.0.Beta1</mapstruct.version>
+        <openapi.generator.version>7.22.0</openapi.generator.version>
+        <springdoc.openapi.version>1.8.0</springdoc.openapi.version>
+        <jackson.databind.version>0.2.10</jackson.databind.version>
     </properties>
     <dependencies>
         <!-- Spring Core -->
@@ -145,6 +148,14 @@
             <artifactId>kafka</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -197,6 +208,18 @@
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
+            <!-- Open Api rest doc generator -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc.openapi.version}</version>
+            </dependency>
+            <!-- OpenApi code generator dependency -->
+            <dependency>
+                <groupId>org.openapitools</groupId>
+                <artifactId>jackson-databind-nullable</artifactId>
+                <version>${jackson.databind.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -239,6 +262,51 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Run junit single test -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <!-- Rest API generator from yaml template -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi.generator.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/kafka-poc-api.yml
+                            </inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>fr.poc.kafka.openapi.rest</apiPackage>
+                            <modelPackage>fr.poc.kafka.openapi.model</modelPackage>
+                            <supportingFilesToGenerate>
+                                ApiUtil.java
+                            </supportingFilesToGenerate>
+                            <configOptions>
+                                <library>spring-boot</library>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBuiltInValidation>true</useSpringBuiltInValidation>
+                                <delegatePattern>false</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

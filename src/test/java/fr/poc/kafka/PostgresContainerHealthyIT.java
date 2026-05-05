@@ -1,11 +1,9 @@
 package fr.poc.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,17 +13,7 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-//@Testcontainers
-//@ActiveProfiles("test")
-//@TestClassOrder(ClassOrderer.OrderAnnotation.class)
-//@Order(Integer.MIN_VALUE)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PostgresContainerHealthyIT extends AbstractIntegrationTestsBase {
-
-
-//    @Container
-//    @ServiceConnection
-//    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3"));
 
 
     @Test
