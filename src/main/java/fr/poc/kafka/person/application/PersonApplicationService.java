@@ -39,7 +39,7 @@ public class PersonApplicationService implements IPersonApplicationService {
     }
 
     @Override
-    public PersonDto createOrUpdatePersonDto(PersonDto personDto) {
-        return personMapper.mapToPersonDto(personUseCase.createOrUpdatePerson(personMapper.mapToPerson(personDto)));
+    public PersonDto createOrUpdatePersonDto(PersonDto personDto, boolean sendNotification) {
+        return personMapper.mapToPersonDto(personUseCase.createOrUpdatePerson(personMapper.mapToPerson(personDto), sendNotification));
     }
 }

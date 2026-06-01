@@ -14,8 +14,40 @@ servers:
 tags:
   - description: "Gestion des personnes
       Permet de gérer des personnes"
-    name: produit
+    name: personne
+  - description: "Gestion des notifications
+      Permet de gérer les notifications"
+    name: notification
 paths:
+  /notification:
+    get:
+      summary: Retourne le prochain message de notification
+      description: Prochain message de notification
+      operationId: getNotification
+      #      security:
+      #        - BearerAuth:
+      #            - produits:read
+      #        - basicAuth:
+      #            - produits:read
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonNotification'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - notification
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: notification
   /person:
     get:
       summary: Retourne la liste des personnes
@@ -48,14 +80,14 @@ paths:
         "404":
           $ref: '#/components/responses/NotFound'
       tags:
-        - produit
+        - personne
       x-contentType: '*/*'
       x-accepts: application/json
       x-tags:
         - tag: personne
   /person/createOrUpdate:
     post:
-      summary: Crée ou maj une nouvelle personne
+      summary: Crée ou maj une personne
       description: Crée ou maj une personne en postant son contenu
       operationId: createOrUpdatePerson
 #      security:
@@ -63,6 +95,13 @@ paths:
 #            - produits:write
 #        - basicAuth:
 #            - produits:write
+      parameters:
+        - name: sendNotification
+          description: Envoi une notification de la personne créee ou maj (default false)
+          in: query
+          required: false
+          schema:
+            type: boolean
       requestBody:
         description: Contenu de la personne à créer ou maj
         content:
@@ -138,9 +177,20 @@ components:
         - lastname
         - age
       xml:
-        name: Personne
+        name: PersonDto
       example:
         id: 123
         firstname: François
         lastname: Fournel
         age: 45
+    PersonNotification:
+      description: Représentation complète d'une notification sur une personne
+      properties:
+        notification:
+          description: Message de la notification.
+          type: string
+        personne:
+          description: La personne sujette à la notification
+          $ref: '#/components/schemas/PersonDto'
+      xml:
+        name: PersonNotification

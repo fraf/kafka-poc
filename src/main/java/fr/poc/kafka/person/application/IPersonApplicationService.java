@@ -10,5 +10,5 @@ public interface IPersonApplicationService {
 
     List<PersonDto> getPersonDtoList();
 
-    PersonDto createOrUpdatePersonDto(PersonDto personDto);
+    PersonDto createOrUpdatePersonDto(PersonDto personDto, boolean sendNotification);
 }

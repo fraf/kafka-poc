@@ -29,9 +29,11 @@ public class PersonService implements IPersonUseCase {
     }
 
     @Override
-    public Person createOrUpdatePerson(Person person) {
+    public Person createOrUpdatePerson(Person person, boolean sendNotification) {
         Person created = personRepository.saveOrUpdate(person);
-        personEventDispatcher.notifyCreated(person);
+        if (sendNotification) {
+            personEventDispatcher.notifyCreated(person);
+        }
         return created;
     }
 

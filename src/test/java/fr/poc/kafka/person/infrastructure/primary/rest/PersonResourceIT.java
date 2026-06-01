@@ -8,13 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.GreaterThan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.restclient.test.autoconfigure.AutoConfigureRestClient;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.client.RestTestClient;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 
 @Slf4j
 @AutoConfigureRestClient
 class PersonResourceIT extends AbstractIntegrationTestsBase {
 
+    @Container
+    @ServiceConnection
+    static protected PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3"));
 
     private RestTestClient restClient;
 
@@ -52,7 +59,11 @@ class PersonResourceIT extends AbstractIntegrationTestsBase {
         personDtoExpected.setLastname(lastname);
         restClient
                 .post()
-                .uri("/createOrUpdate")
+                .uri(uriBuilder ->
+                        uriBuilder.path("/createOrUpdate")
+                                .queryParam("sendNotification", Boolean.FALSE)
+                                .build()
+                )
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(personDtoExpected)
                 .exchange()

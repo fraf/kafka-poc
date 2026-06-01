@@ -14,7 +14,7 @@ public interface IPersonUseCase {
 
     List<Person> getPersonList();
 
-    Person createOrUpdatePerson(Person person);
+    Person createOrUpdatePerson(Person person, boolean sendNotification);
 
 
     boolean deletePerson(long id);

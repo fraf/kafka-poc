@@ -22,7 +22,7 @@ public class PersonResource implements PersonApi {
         return new ResponseEntity<>(personDto, personDto == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    public ResponseEntity<PersonDto> createOrUpdatePerson(PersonDto personneSk) {
-        return new ResponseEntity<>(personApplicationService.createOrUpdatePersonDto(personneSk), HttpStatus.CREATED);
+    public ResponseEntity<PersonDto> createOrUpdatePerson(PersonDto personneSk, Boolean sendNotification) {
+        return new ResponseEntity<>(personApplicationService.createOrUpdatePersonDto(personneSk, sendNotification != null && sendNotification), HttpStatus.CREATED);
     }
 }
