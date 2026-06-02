@@ -1,7 +1,7 @@
 # kafka-poc
 Mise en place d'une webapp spring avec kafka comme broker
 
-## Commit xxx
+## Commit #12428e6
 
 ![Initial commit avec Spring Initializr](spring_initializr.jpg)
 
@@ -43,3 +43,21 @@ Mise en place d'une webapp spring avec kafka comme broker
           DOCKER_HOST=tcp://localhost:2375
           JAVA_HOME=path/to/jdk/root/dir
      ```
+     
+*TODO* 
+> - OpenAuth avec Keycloack
+> - db.migration pour le dataset de test
+> - s'intruire sur la scalabilite des bdd (multitenant)
+> - Le Domain Driven Design
+> - Le Test Driven Development (TDD)
+> - Le Clean Code
+> - BDD (Behavior driven developpement)
+> - PDD (Prompt driven developpement)
+> - Craftmanship (logiciel bien conçu)
+> - Java-Based No-Code and Low-Code Application
+> - Le DevSecOps, l’infrastructure as code
+> - principes SOLID
+> - langchain4j (github et comparaison LLM)
+> - Etudier la JVM la structure en Heap, gestion mémoire
+> - WebSocket qui affiche les notifications du consumer
+> - Serveless (environnement AWS cloud)

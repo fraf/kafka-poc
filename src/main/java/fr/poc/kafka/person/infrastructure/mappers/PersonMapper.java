@@ -1,7 +1,7 @@
 package fr.poc.kafka.person.infrastructure.mappers;
 
+import fr.poc.kafka.openapi.model.PersonDto;
 import fr.poc.kafka.person.domain.ent.Person;
-import fr.poc.kafka.person.infrastructure.primary.dtos.PersonDto;
 import fr.poc.kafka.person.infrastructure.secondary.entities.PersonEntity;
 import org.mapstruct.Mapper;
 

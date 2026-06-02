@@ -14,11 +14,15 @@ spring:
   flyway:
     enabled: "true"
     locations: "classpath:db/migration"
-logging:
-  level:
-    fr.poc.kafka: "debug"
-    org.springframework.web: "info"
-    org.hibernate: "error"
-  config: "logback-spring.xml"
-  file:
-    name: "logs/kafka-poc.log"
+  kafka:
+    bootstrap-servers: "localhost:9092"
+#    consumer:
+#      group-id: "personGroup"
+  logging:
+    level:
+      fr.poc.kafka: "debug"
+      org.springframework.web: "info"
+      org.hibernate: "error"
+    config: "logback-spring.xml"
+    file:
+      name: "logs/kafka-poc.log"
