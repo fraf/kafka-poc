@@ -2,7 +2,7 @@ spring:
   application:
     name: kafka-poc-test
   datasource:
-    url: "jdbc:tc:postgresql://localhost:62919/test?loggerLevel=OFF"
+#    url: "jdbc:tc:postgresql://localhost:62919/test?loggerLevel=OFF"
     username: "test"
     password: "test"
     driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver" #org.postgresql.Driver
@@ -16,6 +16,7 @@ spring:
     locations: "classpath:db/migration"
     user: "test"
     password: "test"
+    cleanDisabled: false
   logging:
     level:
       root: "info"
@@ -26,6 +27,8 @@ spring:
     config: "src/test/resources/logback-spring-test.xml"
     file:
       name: "logs/kafka-poc-test.log"
+    charset:
+      console: UTF-8
   kafka:
 #    bootstrap-servers: "${spring.embedded.kafka.brokers}"
     producer:
@@ -39,3 +42,4 @@ spring:
 #      properties:
 #        "[spring.json.trusted.packages]": "fr.poc.kafka.person.infrastructure.secondary.kafka"
 #        "[spring.json.value.default.type]": "com.example.Invoice"
+        # Désactive le démarrage automatique de tous les @KafkaListener

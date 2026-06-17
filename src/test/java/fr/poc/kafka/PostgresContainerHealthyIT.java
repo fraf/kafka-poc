@@ -3,10 +3,7 @@ package fr.poc.kafka;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,9 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Slf4j
 public class PostgresContainerHealthyIT extends AbstractIntegrationTestsBase {
 
-    @Container
-    @ServiceConnection
-    static protected PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3"));
 
     @Test
     public void whenListTableOfSchemaQueryExecuted_thenResultsReturned() throws Exception {
@@ -38,7 +32,6 @@ public class PostgresContainerHealthyIT extends AbstractIntegrationTestsBase {
             Assertions.fail("Aucune table ! Au moins 'flyway_schema_history' attendu.");
         }
     }
-
 
     private int performUpdate(PostgreSQLContainer<?> postgreSQLContainer, String query) throws SQLException {
         String jdbcUrl = postgreSQLContainer.getJdbcUrl();

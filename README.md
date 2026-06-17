@@ -42,8 +42,10 @@ Mise en place d'une webapp spring avec kafka comme broker
      ```
           DOCKER_HOST=tcp://localhost:2375
           JAVA_HOME=path/to/jdk/root/dir
-     ```
-     
+     ``` 
+
+Pour permettre le reuse des container, il faut mettre le fichier `.testcontainers.properties` dans `%USERPROFILE%`
+
 *TODO* 
 > - OpenAuth avec Keycloack
 > - db.migration pour le dataset de test
