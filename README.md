@@ -45,7 +45,8 @@ Mise en place d'une webapp spring avec kafka comme broker
      ``` 
 
 Pour permettre le reuse des container, il faut mettre le fichier `.testcontainers.properties` dans `%USERPROFILE%`
-
+La valeur à true permet de laisser l'instance de container après les tests executés.
+Attention les container persistent, si on veut les supprimer entrer la commande `docker rm -f $(docker ps -aq)`
 *TODO* 
 > - OpenAuth avec Keycloack
 > - db.migration pour le dataset de test

@@ -29,8 +29,8 @@ public abstract class AbstractIntegrationTestsBase {
 
     static {
         log.info("⚙️ Démarrage des conteneurs isolés du cycle de vie Spring...");
-        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0")).withReuse(true);
-        postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3")).withReuse(true);
+        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0")).withReuse(false);
+        postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3")).withReuse(false);
 
         kafka.start();
         postgres.start();
