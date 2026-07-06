@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+  
+  <localRepository>${user.home}/.m2/repository</localRepository>
+  <profiles>
+    <profile>
+      <id>sonar</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+          <id>repo1.maven.org</id>
+          <name>Maven central</name>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://oss.sonatype.org/maven2/</url>
+        </repository>
+      </repositories>
+      <properties>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.token>squ_3fc3f22bc1843df178b0f88289f0bb0c5e369a48</sonar.token>
+        <sonar.projectKey>kafka-poc</sonar.projectKey>
+      </properties>
+    </profile>
+  </profiles>
+
+
+  <activeProfiles>
+    <activeProfile>sonar</activeProfile>
+  </activeProfiles>
+
+  
+  <pluginGroups>
+    <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+    <pluginGroup>com.github.ekryd.echo-maven-plugin</pluginGroup>
+  </pluginGroups>
+</settings>

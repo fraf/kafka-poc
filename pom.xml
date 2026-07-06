@@ -36,9 +36,12 @@
         <guava.version>33.6.0-jre</guava.version>
         <mapstruct.version>1.7.0.Beta1</mapstruct.version>
         <openapi.generator.version>7.22.0</openapi.generator.version>
-        <springdoc.openapi.version>1.8.0</springdoc.openapi.version>
+        <springdoc.openapi.starter.version>2.6.0</springdoc.openapi.starter.version>
         <jackson.databind.version>0.2.10</jackson.databind.version>
         <datafaker.version>2.5.4</datafaker.version>
+        <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.15</jacoco.maven.plugin.version>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml,${project.build.directory}/site/jacoco-it/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <dependencies>
         <!-- Spring Core -->
@@ -68,6 +71,7 @@
         </dependency>
 
         <!-- Spring integration tests -->
+        <!-- ... JUnit, Mockito, AssertJ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -155,8 +159,6 @@
             <scope>test</scope>
         </dependency>
 
-
-
         <!--Test containers -->
         <dependency>
             <!-- Spring Boot integration module for Testcontainers -->
@@ -180,7 +182,7 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
@@ -229,8 +231,8 @@
             <!-- Open Api rest doc generator -->
             <dependency>
                 <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc.openapi.version}</version>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.openapi.starter.version}</version>
             </dependency>
             <!-- OpenApi code generator dependency -->
             <dependency>
@@ -257,7 +259,21 @@
                     <layers>
                         <enabled>true</enabled>
                     </layers>
+                    <!--                    <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>-->
                 </configuration>
+                <!--                <executions>-->
+                <!-- si on veut démarrer spring boot durant les IT -->
+                <!--                    <execution>-->
+                <!--                        <id>pre-integration-test</id>-->
+                <!--                        <goals>-->
+                <!--                            <goal>start</goal> </goals>-->
+                <!--                    </execution>-->
+                <!--                    <execution>-->
+                <!--                        <id>post-integration-test</id>-->
+                <!--                        <goals>-->
+                <!--                            <goal>stop</goal> </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
             </plugin>
             <!-- Annotations pre precessors -->
             <plugin>
@@ -282,11 +298,42 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <!-- envoi le rapport des issues quality code à sonarqube (conf dans le settings.xml) -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.plugin.version}</version>
+            </plugin>
+            <!-- rapport couverture de code par les tests IT pour sonarqube -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Run integration tests into maven build lifecycle -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
+                    <!-- pour debugger en remote process dans IJ car ForkCount=0 empêche jacoco de fonctionner -->
+                    <argLine>@{argLine} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</argLine>
+                    <!-- Pour debugger facilement les IT -->
+                    <!-- <forkCount>0</forkCount>-->
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
                 <executions>
@@ -343,17 +390,17 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-<!--                        <inherited>true</inherited>-->
+                        <!--                        <inherited>true</inherited>-->
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/kafka-poc-api.yml</inputSpec>
                             <generatorName>typescript-angular</generatorName>
                             <modelPackage>fr.poc.kafka.openapi.angular.model</modelPackage>
                             <apiPackage>fr.poc.kafka.openapi.angular.rest</apiPackage>
-<!--                            <templateResourcePath>cfdp-templates/typescript-axios</templateResourcePath>-->
+                            <!--                            <templateResourcePath>cfdp-templates/typescript-axios</templateResourcePath>-->
                             <configOptions>
                                 <npmName>${project.artifactId}</npmName>
                                 <npmVersion>${project.version}</npmVersion>
-<!--                                <snapshot>${npmSnapshot}</snapshot>-->
+                                <!--                                <snapshot>${npmSnapshot}</snapshot>-->
                                 <supportsES6>true</supportsES6>
                                 <withSeparateModelsAndApi>true</withSeparateModelsAndApi>
                             </configOptions>
