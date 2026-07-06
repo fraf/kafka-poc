@@ -5,46 +5,71 @@ import fr.poc.kafka.openapi.model.PersonDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.GreaterThan;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.restclient.test.autoconfigure.AutoConfigureRestClient;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.client.RestTestClient;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@AutoConfigureRestClient
 class PersonResourceIT extends AbstractIntegrationTestsBase {
 
-    @Container
-    @ServiceConnection
-    static protected PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3"));
-
     private RestTestClient restClient;
-
-    @Autowired
-    private PersonResource personResource;
+    @LocalServerPort
+    private int port;
 
     @BeforeEach
     public void setup() {
-        restClient = RestTestClient.bindToController(personResource)
-                .baseUrl("/person")
-                .defaultHeader("ContentType", "application/json")
+        restClient = RestTestClient.bindToServer()
+                .baseUrl("http://localhost:" + port + "/person")
+                .defaultHeader("Content-Type", "application/json")
                 .build();
     }
 
     @Test
     void whenGetPerson_thenNotFound() {
-        restClient
+        // Tu retrouves ta syntaxe d'origine à 100% !
+        PersonDto personActual = restClient
                 .get()
-                .uri("/0")
+                .uri("/generate")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus()
-                .isNotFound();
+                .expectStatus().isOk()
+                .expectBody(PersonDto.class)
+                .value(person -> {
+                    assertThat(person).isNotNull();
+                    assertThat(person.getId()).isEqualTo(0L);
+                    assertThat(person.getFirstname()).isNotEmpty();
+                    assertThat(person.getLastname()).isNotEmpty();
+                    assertThat(person.getAge()).isGreaterThan(0).isLessThan(100);
+                })
+                .returnResult()
+                .getResponseBody();
+
+        log.info("Person generated : {}", personActual);
+    }
+
+    @Test
+    void whenGeneratePerson_thenAllFieldsFilled() {
+
+        PersonDto personActual = restClient
+                .get()
+                .uri("/generate")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PersonDto.class)
+                .value(person -> {
+                    assertThat(person).isNotNull();
+                    assertThat(person.getId()).isEqualTo(0L);
+                    assertThat(person.getFirstname()).isNotEmpty();
+                    assertThat(person.getLastname()).isNotEmpty();
+                    assertThat(person.getAge()).isGreaterThan(0).isLessThan(100);
+                })
+                .returnResult()
+                .getResponseBody();
+
+        log.info("Person generated : {}", personActual);
     }
 
     @Test
@@ -70,7 +95,8 @@ class PersonResourceIT extends AbstractIntegrationTestsBase {
                 .expectStatus()
                 .isCreated()
                 .expectBody()
-                .jsonPath("$.id").value(_ -> new GreaterThan<>(1))
+                .jsonPath("$.id").value(id -> assertThat((Integer) id)
+                        .isGreaterThan(0))
                 .jsonPath("$.firstname").isEqualTo(firstname)
                 .jsonPath("$.lastname").isEqualTo(lastname)
                 .jsonPath("$.age").isEqualTo(age);

@@ -27,6 +27,8 @@
         <url/>
     </scm>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>26</java.version>
         <maven.compiler.proc>full</maven.compiler.proc>
         <lombok.version>1.18.42</lombok.version>
@@ -36,6 +38,7 @@
         <openapi.generator.version>7.22.0</openapi.generator.version>
         <springdoc.openapi.version>1.8.0</springdoc.openapi.version>
         <jackson.databind.version>0.2.10</jackson.databind.version>
+        <datafaker.version>2.5.4</datafaker.version>
     </properties>
     <dependencies>
         <!-- Spring Core -->
@@ -106,6 +109,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+        </dependency>
+
         <!-- Java Helpers/Boilerplate code generator -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -230,6 +238,12 @@
                 <artifactId>jackson-databind-nullable</artifactId>
                 <version>${jackson.databind.version}</version>
             </dependency>
+            <!-- Datafaker-->
+            <dependency>
+                <groupId>net.datafaker</groupId>
+                <artifactId>datafaker</artifactId>
+                <version>${datafaker.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -272,6 +286,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -285,6 +302,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
             </plugin>
             <!-- Rest API generator from yaml template -->
             <plugin>
@@ -293,6 +313,7 @@
                 <version>${openapi.generator.version}</version>
                 <executions>
                     <execution>
+                        <id>java</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -313,6 +334,28 @@
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <useSpringBuiltInValidation>true</useSpringBuiltInValidation>
                                 <delegatePattern>false</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>angular</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+<!--                        <inherited>true</inherited>-->
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/kafka-poc-api.yml</inputSpec>
+                            <generatorName>typescript-angular</generatorName>
+                            <modelPackage>fr.poc.kafka.openapi.angular.model</modelPackage>
+                            <apiPackage>fr.poc.kafka.openapi.angular.rest</apiPackage>
+<!--                            <templateResourcePath>cfdp-templates/typescript-axios</templateResourcePath>-->
+                            <configOptions>
+                                <npmName>${project.artifactId}</npmName>
+                                <npmVersion>${project.version}</npmVersion>
+<!--                                <snapshot>${npmSnapshot}</snapshot>-->
+                                <supportsES6>true</supportsES6>
+                                <withSeparateModelsAndApi>true</withSeparateModelsAndApi>
                             </configOptions>
                         </configuration>
                     </execution>

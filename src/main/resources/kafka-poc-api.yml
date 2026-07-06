@@ -48,10 +48,10 @@ paths:
       x-accepts: application/json
       x-tags:
         - tag: notification
-  /person:
+  /person/{id}:
     get:
-      summary: Retourne la liste des personnes
-      description: Liste les personnes, en les recherchant éventuellement par nom
+      summary: Retourne une personne
+      description: Retourne une personne à partir de son identifiant
       operationId: getPerson
 #      security:
 #        - BearerAuth:
@@ -66,6 +66,61 @@ paths:
           schema:
             type: integer
             format: int64
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDto'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - personne
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: personne
+  /person/all:
+    get:
+      summary: Retourne la liste des personnes
+      description: Retourne l'ensemble des personnes
+      operationId: getPersons
+      #      security:
+      #        - BearerAuth:
+      #            - produits:read
+      #        - basicAuth:
+      #            - produits:read
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonDto'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - personne
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: personne
+  /person/generate:
+    get:
+      summary: Genère une personne
+      description: Genère une personne avec son adresse
+      operationId: generatePerson
       responses:
         "200":
           content:
