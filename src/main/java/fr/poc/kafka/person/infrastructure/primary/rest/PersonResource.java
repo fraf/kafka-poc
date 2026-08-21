@@ -4,12 +4,14 @@ import fr.poc.kafka.helper.PersonFaker;
 import fr.poc.kafka.openapi.model.PersonDto;
 import fr.poc.kafka.openapi.rest.PersonApi;
 import fr.poc.kafka.person.application.PersonApplicationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class PersonResource implements PersonApi {
 
@@ -29,8 +31,8 @@ public class PersonResource implements PersonApi {
 
     @Override
     public ResponseEntity<List<PersonDto>> getPersons() {
-        //TODO
-        return null;
+        List<PersonDto> personDtos = personApplicationService.getPersonDtoList();
+        return new ResponseEntity<>(personDtos, HttpStatus.OK);
     }
 
     public ResponseEntity<PersonDto> createOrUpdatePerson(PersonDto personneSk, Boolean sendNotification) {
@@ -39,6 +41,9 @@ public class PersonResource implements PersonApi {
 
     @Override
     public ResponseEntity<PersonDto> generatePerson() {
-        return new ResponseEntity<>(personFaker.generateDto(), HttpStatus.OK);
+
+        PersonDto personDto = personFaker.generateDto();
+        log.info("generatePerson() = {}", personDto);
+        return new ResponseEntity<>(personDto, HttpStatus.OK);
     }
 }

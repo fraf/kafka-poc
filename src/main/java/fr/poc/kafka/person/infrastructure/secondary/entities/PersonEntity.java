@@ -3,10 +3,17 @@ package fr.poc.kafka.person.infrastructure.secondary.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "personne")
-@Builder
+@SuperBuilder
+@NoArgsConstructor //pour JPA
+@Setter //pour proxy hibernate
+@Getter //pour proxy hibernate
 public class PersonEntity extends Address {
 
     @Id

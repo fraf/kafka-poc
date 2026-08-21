@@ -1,7 +1,10 @@
 package fr.poc.kafka.config;
 
+import fr.poc.kafka.person.domain.AccountService;
 import fr.poc.kafka.person.domain.PersonService;
+import fr.poc.kafka.person.domain.ports.primary.IAccountUseCase;
 import fr.poc.kafka.person.domain.ports.primary.IPersonUseCase;
+import fr.poc.kafka.person.domain.ports.secondary.IAccountRepository;
 import fr.poc.kafka.person.domain.ports.secondary.IPersonEventDispatcher;
 import fr.poc.kafka.person.domain.ports.secondary.IPersonRepository;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +21,10 @@ public class BoundedContextConfiguration {
     @Bean
     public IPersonUseCase personContext(IPersonRepository personRepository, IPersonEventDispatcher personEventDispatcher) {
         return new PersonService(personRepository, personEventDispatcher);
+    }
+
+    @Bean
+    public IAccountUseCase accountContext(IAccountRepository accountRepository) {
+        return new AccountService(accountRepository);
     }
 }

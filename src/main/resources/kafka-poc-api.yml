@@ -15,6 +15,9 @@ tags:
   - description: "Gestion des personnes
       Permet de gérer des personnes"
     name: personne
+  - description: "Gestion des comptes utilisateurs
+      Permet de gérer des comptes utilisateurs"
+    name: account
   - description: "Gestion des notifications
       Permet de gérer les notifications"
     name: notification
@@ -185,6 +188,112 @@ paths:
       x-accepts: application/json
       x-tags:
         - tag: personne
+  /account/{id}:
+    get:
+      summary: Retourne un compte utilisateur
+      description: Retourne un compte utilisateur à partir de son identifiant
+      operationId: getAccount
+      #      security:
+      #        - BearerAuth:
+      #            - produits:read
+      #        - basicAuth:
+      #            - produits:read
+      parameters:
+        - name: id
+          description: Identifiant unique de l'entité compte utilisateur à récupérer.
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - account
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: account
+  /account/all:
+    get:
+      summary: Retourne la liste des comptes utilisateurs
+      description: Retourne l'ensemble comptes utilisateurs
+      operationId: getAccounts
+      #      security:
+      #        - BearerAuth:
+      #            - produits:read
+      #        - basicAuth:
+      #            - produits:read
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountDto'
+          description: Successful operation
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - account
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: account
+  /account/createOrUpdate:
+    post:
+      summary: Crée ou maj un compte utilisateur
+      description: Crée ou maj un compte utilisateur en postant son contenu
+      operationId: createOrUpdateAccount
+      #      security:
+      #        - BearerAuth:
+      #            - produits:write
+      #        - basicAuth:
+      #            - produits:write
+      requestBody:
+        description: compte utilisateur à créer ou maj
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/AccountDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+          description: successful operation
+        "400":
+          content: { }
+          description: Impossible de créer ou maj la personne (duplication)
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+      tags:
+        - account
+      x-codegen-request-body-name: accountSk
+      x-contentType: '*/*'
+      x-accepts: application/json
+      x-tags:
+        - tag: account
 components:
   responses:
     Success:
@@ -206,6 +315,31 @@ components:
       description: The specified resource can't be deleted due to a conflict with the current state.
       content: {}
   schemas:
+    AddressDto:
+      description: Représentation d'une adresse
+      properties:
+        street:
+          description: Rue
+          type: string
+          minLength: 3
+        city:
+          description: Ville
+          type: string
+          minLength: 3
+        zipcode:
+          description: code postal
+          type: integer
+          format: int64
+      required:
+        - street
+        - city
+        - zipcode
+      xml:
+        name: AddressDto
+      example:
+        street: 10 rue du bourbonnais
+        city: Lyon
+        zipcode: 69009
     PersonDto:
       description: Représentation complète d'une personne
       properties:
@@ -227,10 +361,15 @@ components:
           format: int32
           minimum: 0
           maximum: 999
+        address:
+          description: Adresse de la personne
+          type: object
+          $ref: '#/components/schemas/AddressDto'
       required:
         - firstname
         - lastname
         - age
+        - address
       xml:
         name: PersonDto
       example:
@@ -238,6 +377,45 @@ components:
         firstname: François
         lastname: Fournel
         age: 45
+    AccountDto:
+      description: Représentation d'un compte client
+      properties:
+        id:
+          description: Identifiant du compte client
+          type: integer
+          format: int64
+        login:
+          description: Login du compte
+          type: string
+          minLength: 3
+        password:
+          description: Mot de passe du compte
+          type: string
+          minLength: 3
+        personId:
+          description: Identifiant de la personne liée au compte client
+          type: integer
+          format: int64
+        person:
+          description: Person liée au compte client
+          type: object
+          $ref: '#/components/schemas/PersonDto'
+      required:
+        - login
+        - password
+        - personId
+      xml:
+        name: AccountDto
+      example:
+        id: 123
+        login: ffournel
+        password: mypass
+        personId: 1
+        person:
+          id: 1
+          firstname: francois
+          lastname: fournel
+          age: 45
     PersonNotification:
       description: Représentation complète d'une notification sur une personne
       properties:
