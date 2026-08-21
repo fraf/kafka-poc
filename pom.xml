@@ -54,6 +54,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Spring Security Authentification -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!-- Spring Data access -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -71,7 +76,7 @@
         </dependency>
 
         <!-- Spring integration tests -->
-        <!-- ... JUnit, Mockito, AssertJ -->
+        <!-- ... JUnit, Mockito, AssertJ, Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -80,6 +85,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-restclient-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -298,7 +308,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            <!-- envoi le rapport des issues quality code à sonarqube (conf dans le settings.xml) -->
+            <!-- envoi le rapport des issues quality code à sonarqube (conf dans le config-consumer.properties.xml) -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>

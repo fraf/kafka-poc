@@ -65,6 +65,40 @@ Pour se faire il faut configurer le plugin des IT `maven-failsafe`, il existe de
 **Note :** A noter que le jacoco ne marche que si maven et les IT Junit sont dans un thread séparé (par défaut).
 Pour le mode debug, décommenter la ligne `<forkCount>0</forkCount>` du plugin `maven-failsafe`.
 
+# Killer le listener tomcat avec son port d'écoute
+
+Sous powershell :
+```
+netstat -ano | findstr :8080
+taskkill /PID THE_PID_HERE /F
+```
+
+## Lancement de kafka avec docker sous WSL2
+
+Les fichiers nécessaires sont dans `/docker/*`. Il contient :
+- `docker-compose-kafka.yml` : Permet de lancer un cluster kafka composé d'un seul broker. 
+Les listeners qui sont à l'écoute des requêtes clients à 3 interfaces : 
+  - host (en provenance de l'extérieur du docker donc réseau localhost)
+  - docker (en provenance d'un client situé dans un autre container sous docker donc même réseau)
+  - controller (en provenance de kraft pour la synchronisation des clusters kafka)
+
+
+Ci-dessous les commandes docker pour opérer avec le cluster `kafka` : 
+- Lancement du kafka cluster ET de l'interface kafka ui avec `docker compose` (mode daemon ou ctrl+Z en mode interactif)
+- production des messages
+- consommation des messages
+- connexion au broker si configuration necessaire
+
+```
+docker compose -f docker-compose.yml up -d
+docker exec -ti kafka-broker /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server :9092 --topic demo
+docker exec -ti kafka-broker /opt/kafka/bin/kafka-console-consumer.sh --command-config /home/appuser/config-consumer.properties --bootstrap-server :9092 --topic demo
+docker exec -ti kafka-broker /bin/bash
+``` 
+
+L'id du consumer group étant défini, le consumer sera toujours identifié et aura son propre offset de sa partition lue. 
+A l'inverse du consumer anonyme qui n'a pas d'appartenance et lit soit sur écoute du producer soit toute la file depuis le début (`--from-beginning`)
+
 *TODO* 
 > - OpenAuth avec Keycloack
 > - db.migration pour le dataset de test
@@ -84,3 +118,17 @@ Pour le mode debug, décommenter la ligne `<forkCount>0</forkCount>` du plugin `
 > - Serveless (environnement AWS cloud)
 
 Il existe plusieurs cases couramment utilisées : comme la camelCase, la snake_case, la PascalCase, kebab-case ou encore l’UPPER_CASE
+
+*WORD CLOUD*
+
+Person, Account with Profil (announce, buys, parameters - identiy/pass/notif/adress/payments), Preferences with Favorites (search, products)
+
+Order : one product and 2 accounts 
+
+Delivery : carrier, price, location 
+
+Product focus : Favorite, description, title, state, price, location, weight, volume 
+
+Workflow Creation : state : draft, created, updated, deleted 
+
+Catalog, Research, Classification (tag, category with filters, fulltext)

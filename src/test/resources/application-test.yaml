@@ -13,7 +13,9 @@ spring:
     show-sql: "true"
   flyway:
     enabled: "true"
-    locations: "classpath:db/migration"
+    locations:
+      - "classpath:db/migration"          # Charge les scripts de main
+      - "classpath:db/test-migration"     # Charge les scripts spécifiques aux tests
     user: "test"
     password: "test"
     cleanDisabled: false

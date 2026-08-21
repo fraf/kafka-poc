@@ -13,6 +13,7 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,17 @@ public abstract class AbstractIntegrationTestsBase {
     static {
         log.info("⚙️ Démarrage des conteneurs isolés du cycle de vie Spring...");
         kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0")).withReuse(false);
-        postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3")).withReuse(false);
+        postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.3"))
+                // Copie le fichier du classpath vers le container
+                .withCopyFileToContainer(
+                        MountableFile.forClasspathResource("datasets/insert_personnes.csv"),
+                        "/tmp/insert_personnes.csv"
+                )
+                .withCopyFileToContainer(
+                        MountableFile.forClasspathResource("datasets/insert_accounts.csv"),
+                        "/tmp/insert_accounts.csv"
+                )
+                .withReuse(false);
 
         kafka.start();
         postgres.start();
